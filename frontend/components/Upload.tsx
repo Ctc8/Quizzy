@@ -19,6 +19,7 @@ function Upload() {
 	const [file, setFile] = useState<File | null>(null)
 	const [customPrompt, setCustomPrompt] = useState("")
 	const [selectedPrompt, setSelectedPrompt] = useState("")
+	const [flashcardSetName, setFlashcardSetName] = useState("")
 	const [toast, setToast] = useState<{
 		open: boolean
 		message: string
@@ -78,10 +79,20 @@ function Upload() {
 			return
 		}
 
+		if (!flashcardSetName.trim()) {
+			setToast({
+				open: true,
+				message: "Please enter a name for your flashcard set.",
+				severity: "warning",
+			})
+			return
+		}
+
 		// Logic for generating flashcards would go here
 		console.log({
 			file,
 			prompt: customPrompt || selectedPrompt,
+			name: flashcardSetName,
 		})
 
 		setToast({
@@ -170,12 +181,24 @@ function Upload() {
 					/>
 				</FormControl>
 
+				<FormControl fullWidth>
+					<TextField
+						label="Flashcard Set Name"
+						placeholder="Enter a name for your flashcard set"
+						required
+						inputProps={{ maxLength: 100 }}
+						helperText="Give your flashcards a memorable name (required)"
+						onChange={e => setFlashcardSetName(e.target.value)}
+						value={flashcardSetName}
+					/>
+				</FormControl>
+
 				<Button
 					variant="contained"
 					color="success"
 					size="large"
 					onClick={handleGenerateFlashcards}
-					disabled={!file}
+					disabled={!file || !flashcardSetName.trim()}
 					fullWidth
 				>
 					Generate Flashcards
