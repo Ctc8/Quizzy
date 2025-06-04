@@ -1,14 +1,13 @@
 import "./App.css"
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    Navigate,
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	Link,
+	Navigate,
 } from "react-router-dom"
-// Corrected import paths
 import Login from "../frontend/components/Login"
-import Upload from "../frontend/components/Upload" 
+import Upload from "../frontend/components/Upload"
 import Home from "../frontend/components/Home"
 import Sets from "../frontend/components/Sets"
 import Flashcards from "../frontend/components/Flashcards"
