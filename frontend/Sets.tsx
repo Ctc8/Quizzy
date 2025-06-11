@@ -17,89 +17,114 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogActions,
+	Snackbar,
+	Alert,
 } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import StarIcon from "@mui/icons-material/Star"
 import StarBorderIcon from "@mui/icons-material/StarBorder"
+import { useNavigate } from "react-router-dom"
+import { createClient } from "@supabase/supabase-js"
 
-// Mock data - replace with actual API call
-const mockSets = [
-	{
-		id: 1,
-		title: "Biology 101",
-		cards: 42,
-		lastModified: "2025-05-28",
-		favorite: true,
-		tags: ["science", "biology"],
-	},
-	{
-		id: 2,
-		title: "Spanish Vocabulary",
-		cards: 85,
-		lastModified: "2025-05-30",
-		favorite: false,
-		tags: ["language", "spanish"],
-	},
-	{
-		id: 3,
-		title: "JavaScript Fundamentals",
-		cards: 36,
-		lastModified: "2025-06-01",
-		favorite: true,
-		tags: ["programming", "javascript"],
-	},
-	{
-		id: 4,
-		title: "World History",
-		cards: 120,
-		lastModified: "2025-05-20",
-		favorite: false,
-		tags: ["history", "social studies"],
-	},
-]
+const supabaseUrl = "https://knrtgdrqmawdpdkzypxg.supabase.co"
+const supabaseKey =
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtucnRnZHJxbWF3ZHBka3p5cHhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDk0ODIsImV4cCI6MjA2NDU4NTQ4Mn0.TNiMq_vY_ubSdW_VEQDlZz5-hwEjJ94930UhP_XiVPc"
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 function Sets() {
-	const [sets, setSets] = useState<any[]>([])
-	const [loading, setLoading] = useState<boolean>(true)
-	const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
-	const [setToDelete, setSetToDelete] = useState<number | null>(null)
+    const [sets, setSets] = useState<any[]>([])
+    const [loading, setLoading] = useState<boolean>(true)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+    const [setToDelete, setSetToDelete] = useState<string | null>(null)
+    const [user, setUser] = useState<any>(null)
+    const navigate = useNavigate()
+    const [notification, setNotification] = useState<{
+        open: boolean
+        message: string
+        type: "success" | "error"
+    }>({
+        open: false,
+        message: "",
+        type: "success",
+    })
 
+	// First check if the user is authenticated
 	useEffect(() => {
-		// Replace with actual API fetch
-		const fetchSets = async () => {
-			try {
-				// const response = await fetch('/api/flashcardsets');
-				// const data = await response.json();
-				// setSets(data);
-
-				// Using mock data for now
-				setTimeout(() => {
-					setSets(mockSets)
-					setLoading(false)
-				}, 800)
-			} catch (error) {
-				console.error("Error fetching flashcard sets:", error)
-				setLoading(false)
+		async function checkAuth() {
+			const {
+				data: { session },
+			} = await supabase.auth.getSession()
+			if (!session) {
+				// Redirect to login if not authenticated
+				navigate("/login")
+				return
 			}
+
+			setUser(session.user)
+			// After confirming authentication, fetch the sets
+			fetchSets(session.user.id)
 		}
 
-		fetchSets()
-	}, [])
+		checkAuth()
+	}, [navigate])
 
-	const handleViewSet = (id: number) => {
-		// Instead of router.push, you might use window.location or a state management approach
-		window.location.href = `/flashcards/${id}`
-		// Alternatively, if using a state management library:
-		// props.navigateToSet(id);
+	const fetchSets = async (userId: string) => {
+		setLoading(true)
+		try {
+			// Only fetch flashcard sets for the current user
+			const { data: flashcardSets, error } = await supabase
+				.from("flashcard_sets")
+				.select("*, flashcards(count)")
+				.eq("user_id", userId) 
+				.order("created_at", { ascending: false })
+
+			if (error) throw error
+
+			if (flashcardSets && flashcardSets.length > 0) {
+				const formattedSets = await Promise.all(
+					flashcardSets.map(async set => {
+						// Get count of flashcards for this set
+						const { count, error: countError } = await supabase
+							.from("flashcards")
+							.select("*", { count: "exact", head: true })
+							.eq("set_id", set.id)
+
+						if (countError)
+							console.error("Error getting card count:", countError)
+
+						return {
+							id: set.id,
+							title: set.name,
+							cards: count || 0,
+							lastModified: set.created_at,
+							favorite: set.favorite || false,
+							tags: set.tags || [],
+						}
+					})
+				)
+
+				setSets(formattedSets)
+			} else {
+				setSets([])
+			}
+		} catch (error) {
+			console.error("Error fetching flashcard sets:", error)
+		} finally {
+			setLoading(false)
+		}
 	}
 
-	const handleEditSet = (id: number, e: React.MouseEvent) => {
+	const handleViewSet = (id: string) => {
+		navigate(`/flashcards/${id}`)
+	}
+
+	const handleEditSet = (id: string, e: React.MouseEvent) => {
 		e.stopPropagation()
-		window.location.href = `/flashcards/${id}/edit`
+		navigate(`/flashcards/${id}/edit`)
 	}
 
-	const handleDeleteClick = (id: number, e: React.MouseEvent) => {
+	const handleDeleteClick = (id: string, e: React.MouseEvent) => {
 		e.stopPropagation()
 		setSetToDelete(id)
 		setDeleteDialogOpen(true)
@@ -108,32 +133,85 @@ function Sets() {
 	const confirmDelete = async () => {
 		if (setToDelete !== null) {
 			try {
-				// Replace with actual API call
-				// await fetch(`/api/flashcardsets/${setToDelete}`, { method: 'DELETE' });
+				// Delete from Supabase
+				const { error } = await supabase
+					.from("flashcard_sets")
+					.delete()
+					.eq("id", setToDelete)
+					.eq("user_id", user.id) // Add this to ensure users can only delete their own sets
+
+				if (error) throw error
 
 				// Update UI
 				setSets(sets.filter(set => set.id !== setToDelete))
-				setDeleteDialogOpen(false)
-				setSetToDelete(null)
+				setNotification({
+					open: true,
+					message: "Flashcard set deleted successfully",
+					type: "success",
+				})
 			} catch (error) {
 				console.error("Error deleting set:", error)
+				setNotification({
+					open: true,
+					message: "Failed to delete flashcard set",
+					type: "error",
+				})
+			} finally {
+				setDeleteDialogOpen(false)
+				setSetToDelete(null)
 			}
 		}
 	}
 
-	const toggleFavorite = (id: number, e: React.MouseEvent) => {
+	const toggleFavorite = async (id: string, e: React.MouseEvent) => {
 		e.stopPropagation()
+
+		// Find current set to get its current favorite status
+		const currentSet = sets.find(set => set.id === id)
+		if (!currentSet) return
+
+		const newFavoriteStatus = !currentSet.favorite
+
+		// Optimistically update UI
 		setSets(
 			sets.map(set =>
-				set.id === id ? { ...set, favorite: !set.favorite } : set
+				set.id === id ? { ...set, favorite: newFavoriteStatus } : set
 			)
 		)
 
-		// Add actual API call here to update favorite status
+		try {
+			// Update in Supabase
+			const { error } = await supabase
+				.from("flashcard_sets")
+				.update({ favorite: newFavoriteStatus })
+				.eq("id", id)
+				.eq("user_id", user.id) // Add this to ensure users can only update their own sets
+
+			if (error) throw error
+		} catch (error) {
+			console.error("Error updating favorite status:", error)
+
+			// Revert UI on error
+			setSets(
+				sets.map(set =>
+					set.id === id ? { ...set, favorite: currentSet.favorite } : set
+				)
+			)
+
+			setNotification({
+				open: true,
+				message: "Failed to update favorite status",
+				type: "error",
+			})
+		}
 	}
 
 	const handleCreateNew = () => {
-		window.location.href = "/flashcards/new"
+		navigate("/upload")
+	}
+
+	const handleCloseNotification = () => {
+		setNotification({ ...notification, open: false })
 	}
 
 	if (loading) {
@@ -164,6 +242,9 @@ function Sets() {
 				<Typography variant="h4" component="h1">
 					My Flashcard Sets
 				</Typography>
+				<Button variant="contained" color="primary" onClick={handleCreateNew}>
+					Create New Set
+				</Button>
 			</Box>
 
 			{sets.length === 0 ? (
@@ -185,8 +266,6 @@ function Sets() {
 					</Button>
 				</Box>
 			) : (
-				// ...existing code...
-
 				<Grid container spacing={3}>
 					{sets.map(set => (
 						<Grid item xs={12} sm={6} md={4} key={set.id}>
@@ -263,16 +342,17 @@ function Sets() {
 											maxHeight: "80px", // Limit tag area height
 										}}
 									>
-										{set.tags.map((tag: string) => (
-											<Chip
-												key={tag}
-												label={tag}
-												size="small"
-												color="primary"
-												variant="outlined"
-												onClick={e => e.stopPropagation()}
-											/>
-										))}
+										{set.tags &&
+											set.tags.map((tag: string) => (
+												<Chip
+													key={tag}
+													label={tag}
+													size="small"
+													color="primary"
+													variant="outlined"
+													onClick={e => e.stopPropagation()}
+												/>
+											))}
 									</Box>
 									<Box sx={{ flexGrow: 1 }} />{" "}
 									{/* Push action area to bottom */}
@@ -329,6 +409,22 @@ function Sets() {
 					</Button>
 				</DialogActions>
 			</Dialog>
+
+			{/* Notification Snackbar */}
+			<Snackbar
+				open={notification.open}
+				autoHideDuration={6000}
+				onClose={handleCloseNotification}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleCloseNotification}
+					severity={notification.type}
+					sx={{ width: "100%" }}
+				>
+					{notification.message}
+				</Alert>
+			</Snackbar>
 		</Container>
 	)
 }

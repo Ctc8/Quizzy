@@ -6,11 +6,12 @@ import {
 	Link,
 	Navigate,
 } from "react-router-dom"
-import Login from "../frontend/components/Login"
-import Upload from "../frontend/components/Upload"
-import Home from "../frontend/components/Home"
-import Sets from "../frontend/components/Sets"
-import Flashcards from "../frontend/components/Flashcards"
+import Login from "../frontend/Login"
+import SignUp from "../frontend/SignUp" // Import the new SignUp component
+import Upload from "../frontend/Upload"
+import Home from "../frontend/Home"
+import Sets from "../frontend/Sets"
+import Flashcards from "../frontend/Flashcards"
 
 function App() {
 	const isAuthenticated = false
@@ -38,9 +39,6 @@ function App() {
 							<Link to="/upload">Upload</Link>
 						</li>
 						<li>
-							<Link to="/flashcards">Flashcards</Link>
-						</li>
-						<li>
 							<Link to="/sets">Sets</Link>
 						</li>
 					</ul>
@@ -50,16 +48,11 @@ function App() {
 					<Route path="/" element={<Home />} />
 					<Route path="/home" element={<Home />} />
 					<Route path="/login" element={<Login />} />
-					<Route path="/flashcards" element={<Flashcards />} />
+					<Route path="/signup" element={<SignUp />} />{" "}
+					<Route path="/flashcards/:id" element={<Flashcards />} />
+					<Route path="/flashcards/:id/edit" element={<Upload />} />
 					<Route path="/sets" element={<Sets />} />
-					<Route
-						path="/upload"
-						element={<Upload />}
-						// element={
-						//   // Optional: Protect the upload route
-						//   isAuthenticated ? <Upload /> : <Navigate to="/login" />
-						// }
-					/>
+					<Route path="/upload" element={<Upload />} />
 					<Route path="*" element={<Navigate to="/" />} />
 				</Routes>
 			</div>
