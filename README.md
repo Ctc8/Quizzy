@@ -1,4 +1,4 @@
-# Quizzy 🧠  
+# Quizzy 
 AI-Powered Flashcard Generator  
 
 Quizzy is a full-stack web app that helps students and lifelong learners generate and manage flashcards from their own study materials using AI. Upload lecture notes, textbooks, or slides (PDF/DOCX), and Quizzy automatically creates flashcard sets you can save, edit, and study anytime.
