@@ -11,6 +11,7 @@ import {
 	Alert,
 	Paper,
 	CircularProgress,
+	useTheme,
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
 import Flashcards from "./Flashcards"
@@ -18,6 +19,7 @@ import { supabase } from "./supabaseClient"
 import { useNavigate } from "react-router-dom"
 
 function Upload() {
+	const theme = useTheme() // Add theme hook
 	const [file, setFile] = useState<File | null>(null)
 	const [flashcardSetName, setFlashcardSetName] = useState("")
 	const [extractedText, setExtractedText] = useState<string>("")
@@ -385,16 +387,19 @@ function Upload() {
 									p: 2,
 									maxHeight: "300px",
 									overflowY: "auto",
-									bgcolor: "grey.50",
-									border: "1px solid",
-									borderColor: "grey.200",
+									bgcolor: theme.palette.background.paper, // Updated to use theme color
+									border: `1px solid ${theme.palette.divider}`, // Updated border color
 									borderRadius: 1,
 									fontFamily: "monospace",
 								}}
 							>
 								{extractedText ? (
 									<Typography
-										sx={{ whiteSpace: "pre-wrap", fontSize: "0.9rem" }}
+										sx={{
+											whiteSpace: "pre-wrap",
+											fontSize: "0.9rem",
+											color: theme.palette.text.primary, // Updated text color
+										}}
 									>
 										{extractedText}
 									</Typography>

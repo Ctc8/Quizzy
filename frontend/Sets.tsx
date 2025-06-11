@@ -33,23 +33,23 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 function Sets() {
-    const [sets, setSets] = useState<any[]>([])
-    const [loading, setLoading] = useState<boolean>(true)
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
-    const [setToDelete, setSetToDelete] = useState<string | null>(null)
-    const [user, setUser] = useState<any>(null)
-    const navigate = useNavigate()
-    const [notification, setNotification] = useState<{
-        open: boolean
-        message: string
-        type: "success" | "error"
-    }>({
-        open: false,
-        message: "",
-        type: "success",
-    })
+	const [sets, setSets] = useState<any[]>([])
+	const [loading, setLoading] = useState<boolean>(true)
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+	const [setToDelete, setSetToDelete] = useState<string | null>(null)
+	const [user, setUser] = useState<any>(null)
+	const navigate = useNavigate()
+	const [notification, setNotification] = useState<{
+		open: boolean
+		message: string
+		type: "success" | "error"
+	}>({
+		open: false,
+		message: "",
+		type: "success",
+	})
 
-	// First check if the user is authenticated
+	// check if the user is authenticated
 	useEffect(() => {
 		async function checkAuth() {
 			const {
@@ -67,6 +67,21 @@ function Sets() {
 		}
 
 		checkAuth()
+
+		// Add auth state change listener
+		const { data: authListener } = supabase.auth.onAuthStateChange(
+			(event, session) => {
+				if (event === "SIGNED_OUT" || !session) {
+					// Navigate to home when signed out
+					navigate("/")
+				}
+			}
+		)
+
+		return () => {
+			// Clean up subscription
+			authListener?.subscription.unsubscribe()
+		}
 	}, [navigate])
 
 	const fetchSets = async (userId: string) => {
@@ -76,7 +91,7 @@ function Sets() {
 			const { data: flashcardSets, error } = await supabase
 				.from("flashcard_sets")
 				.select("*, flashcards(count)")
-				.eq("user_id", userId) 
+				.eq("user_id", userId)
 				.order("created_at", { ascending: false })
 
 			if (error) throw error
@@ -138,7 +153,7 @@ function Sets() {
 					.from("flashcard_sets")
 					.delete()
 					.eq("id", setToDelete)
-					.eq("user_id", user.id) // Add this to ensure users can only delete their own sets
+					.eq("user_id", user.id) // ensure users can only delete their own sets
 
 				if (error) throw error
 
@@ -185,7 +200,7 @@ function Sets() {
 				.from("flashcard_sets")
 				.update({ favorite: newFavoriteStatus })
 				.eq("id", id)
-				.eq("user_id", user.id) // Add this to ensure users can only update their own sets
+				.eq("user_id", user.id)
 
 			if (error) throw error
 		} catch (error) {
@@ -203,6 +218,39 @@ function Sets() {
 				message: "Failed to update favorite status",
 				type: "error",
 			})
+		}
+	}
+
+	// Add a proper sign out handler in Sets component
+	const handleSignOut = async () => {
+		try {
+			setLoading(true)
+			// Sign out from Supabase
+			const { error } = await supabase.auth.signOut()
+
+			if (error) throw error
+
+			// Clear user state
+			setUser(null)
+
+			// Show notification - though user will likely be redirected before seeing it
+			setNotification({
+				open: true,
+				message: "Signed out successfully",
+				type: "success",
+			})
+
+			// Redirect to home page
+			navigate("/")
+		} catch (error) {
+			console.error("Error signing out:", error)
+			setNotification({
+				open: true,
+				message: "Failed to sign out",
+				type: "error",
+			})
+		} finally {
+			setLoading(false)
 		}
 	}
 

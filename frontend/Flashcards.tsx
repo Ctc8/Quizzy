@@ -8,6 +8,7 @@ import {
 	Button,
 	CircularProgress,
 	IconButton,
+	useTheme,
 } from "@mui/material"
 import {
 	ArrowBack,
@@ -24,55 +25,6 @@ const supabaseUrl = "https://knrtgdrqmawdpdkzypxg.supabase.co"
 const supabaseKey =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtucnRnZHJxbWF3ZHBka3p5cHhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMDk0ODIsImV4cCI6MjA2NDU4NTQ4Mn0.TNiMq_vY_ubSdW_VEQDlZz5-hwEjJ94930UhP_XiVPc"
 const supabase = createClient(supabaseUrl, supabaseKey)
-
-const styles = {
-	flipCard: {
-		backgroundColor: "transparent",
-		width: "100%",
-		height: "300px",
-		perspective: "1000px",
-		cursor: "pointer",
-	},
-	flipCardInner: {
-		position: "relative",
-		width: "100%",
-		height: "100%",
-		textAlign: "center",
-		transition: "transform 0.6s",
-		transformStyle: "preserve-3d",
-	},
-	flipCardInnerFlipped: {
-		transform: "rotateY(180deg)",
-	},
-	flipCardInnerNoAnimation: {
-		transition: "none",
-	},
-	flipCardFront: {
-		position: "absolute",
-		width: "100%",
-		height: "100%",
-		backfaceVisibility: "hidden",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		borderRadius: "8px",
-		boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-		backgroundColor: "white",
-	},
-	flipCardBack: {
-		position: "absolute",
-		width: "100%",
-		height: "100%",
-		backfaceVisibility: "hidden",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		borderRadius: "8px",
-		boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-		backgroundColor: "white",
-		transform: "rotateY(180deg)",
-	},
-}
 
 interface Flashcard {
 	id?: string
@@ -93,6 +45,7 @@ function Flashcards({
 	flashcards = [],
 	flashcardSetName = "",
 }: FlashcardsProps) {
+	const theme = useTheme()
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
 	const [loading, setLoading] = useState<boolean>(id ? true : false)
@@ -104,6 +57,58 @@ function Flashcards({
 	const [showAnswer, setShowAnswer] = useState(false)
 	const [disableAnimation, setDisableAnimation] = useState(false)
 	const flipCardRef = useRef<HTMLDivElement>(null)
+
+	// Define styles with theme colors
+	const styles = {
+		flipCard: {
+			backgroundColor: "transparent",
+			width: "100%",
+			height: "300px",
+			perspective: "1000px",
+			cursor: "pointer",
+		},
+		flipCardInner: {
+			position: "relative",
+			width: "100%",
+			height: "100%",
+			textAlign: "center",
+			transition: "transform 0.6s",
+			transformStyle: "preserve-3d",
+		},
+		flipCardInnerFlipped: {
+			transform: "rotateY(180deg)",
+		},
+		flipCardInnerNoAnimation: {
+			transition: "none",
+		},
+		flipCardFront: {
+			position: "absolute",
+			width: "100%",
+			height: "100%",
+			backfaceVisibility: "hidden",
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+			borderRadius: "8px",
+			boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+			backgroundColor: theme.palette.background.paper,
+			border: `1px solid ${theme.palette.divider}`,
+		},
+		flipCardBack: {
+			position: "absolute",
+			width: "100%",
+			height: "100%",
+			backfaceVisibility: "hidden",
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+			borderRadius: "8px",
+			boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+			backgroundColor: theme.palette.background.paper,
+			border: `1px solid ${theme.palette.divider}`,
+			transform: "rotateY(180deg)",
+		},
+	}
 
 	// Fetch flashcards when component mounts if we have an ID
 	useEffect(() => {
@@ -272,7 +277,16 @@ function Flashcards({
 	}
 
 	return (
-		<Box sx={{ maxWidth: "800px", mx: "auto", mt: 4, mb: 8, px: 2 }}>
+		<Box
+			sx={{
+				maxWidth: "800px",
+				mx: "auto",
+				mt: 4,
+				mb: 8,
+				px: 2,
+				backgroundColor: theme.palette.background.default,
+			}}
+		>
 			{/* Header */}
 			<Box
 				sx={{
@@ -321,7 +335,12 @@ function Flashcards({
 								{/* Front side - Question */}
 								<div style={styles.flipCardFront}>
 									<CardContent
-										sx={{ textAlign: "center", width: "100%", p: 4 }}
+										sx={{
+											textAlign: "center",
+											width: "100%",
+											p: 4,
+											backgroundColor: "transparent",
+										}}
 									>
 										<Typography variant="h5" sx={{ fontWeight: "medium" }}>
 											{cards[currentIndex]?.front}
@@ -342,7 +361,12 @@ function Flashcards({
 								{/* Back side - Answer */}
 								<div style={styles.flipCardBack}>
 									<CardContent
-										sx={{ textAlign: "center", width: "100%", p: 4 }}
+										sx={{
+											textAlign: "center",
+											width: "100%",
+											p: 4,
+											backgroundColor: "transparent",
+										}}
 									>
 										<Typography variant="h5">
 											{cards[currentIndex]?.back}

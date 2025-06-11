@@ -79,20 +79,6 @@ function Home() {
 	return (
 		<Container maxWidth="md">
 			<Box sx={{ mt: 8, textAlign: "center" }}>
-				{user && (
-					<Box sx={{ position: "absolute", top: 20, right: 20 }}>
-						<Button
-							variant="outlined"
-							color="primary"
-							onClick={handleSignOut}
-							startIcon={<LogoutIcon />}
-							disabled={signOutLoading}
-						>
-							{signOutLoading ? "Signing Out..." : "Sign Out"}
-						</Button>
-					</Box>
-				)}
-
 				<Typography variant="h2" component="h1" gutterBottom fontWeight="bold">
 					Quizzy
 				</Typography>
@@ -133,3 +119,9 @@ function Home() {
 }
 
 export default Home
+
+// F9F4EA
+// 313733
+// 3C3E37
+// E78842
+// F7F2E7
