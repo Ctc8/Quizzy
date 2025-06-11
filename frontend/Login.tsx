@@ -32,12 +32,11 @@ function Login() {
   // State for user authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [showLoginForm, setShowLoginForm] = useState(true);  // Controls which form to show
+  const [showLoginForm, setShowLoginForm] = useState(true);  
 
-  // Form state variables
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")  // For signup
+  const [confirmPassword, setConfirmPassword] = useState("")  
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -358,11 +357,11 @@ function Login() {
               )}
             </Button>
 
-            <Divider sx={{ my: 2 }}>
+            {/* <Divider sx={{ my: 2 }}>
               <Typography variant="body2" color="text.secondary">
                 OR
               </Typography>
-            </Divider>
+            </Divider> */}
 
             <Grid container spacing={2} sx={{ mb: 3 }}>
               <Grid xs={6}>

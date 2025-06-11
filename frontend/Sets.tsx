@@ -67,21 +67,6 @@ function Sets() {
 		}
 
 		checkAuth()
-
-		// Add auth state change listener
-		const { data: authListener } = supabase.auth.onAuthStateChange(
-			(event, session) => {
-				if (event === "SIGNED_OUT" || !session) {
-					// Navigate to home when signed out
-					navigate("/")
-				}
-			}
-		)
-
-		return () => {
-			// Clean up subscription
-			authListener?.subscription.unsubscribe()
-		}
 	}, [navigate])
 
 	const fetchSets = async (userId: string) => {

@@ -19,7 +19,7 @@ import { supabase } from "./supabaseClient"
 import { useNavigate } from "react-router-dom"
 
 function Upload() {
-	const theme = useTheme() // Add theme hook
+	const theme = useTheme() 
 	const [file, setFile] = useState<File | null>(null)
 	const [flashcardSetName, setFlashcardSetName] = useState("")
 	const [extractedText, setExtractedText] = useState<string>("")

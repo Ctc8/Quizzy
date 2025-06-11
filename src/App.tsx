@@ -29,8 +29,8 @@ import Flashcards from "../frontend/Flashcards"
 import { useState, useEffect } from "react"
 import { supabase } from "../frontend/supabaseClient"
 import QuizzyLogo from "./Quizzy.png"
+import {signOutAndRedirect} from "../frontend/auth"
 
-// Navigation component with auth state
 const Navigation = () => {
 	const theme = useTheme()
 	const location = useLocation()
@@ -58,7 +58,7 @@ const Navigation = () => {
 	}, [])
 
 	const handleSignOut = async () => {
-		await supabase.auth.signOut()
+		await signOutAndRedirect()
 	}
 
 	if (location.pathname === "/login" || location.pathname === "/signup") {
@@ -164,7 +164,6 @@ const Navigation = () => {
 	)
 }
 
-// Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const [authenticated, setAuthenticated] = useState(false)
 	const [loading, setLoading] = useState(true)
@@ -181,7 +180,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 		checkAuth()
 	}, [])
 
-	if (loading) return null // Or a loading spinner
+	if (loading) return null 
 
 	return authenticated ? <>{children}</> : <Navigate to="/login" />
 }
