@@ -18,3 +18,5 @@ Quizzy is a full-stack web app that helps students and lifelong learners generat
 - **Backend**: Node.js, Express  
 - **AI Integration**: Google Gemini API  
 - **Database**: Supabase 
+
+![Screenshot](https://i.imgur.com/xXFnpoj.jpg)
