@@ -12,22 +12,27 @@ import {
 	Alert,
 	Divider,
 	CircularProgress,
+	useTheme,
 } from "@mui/material"
 import { Grid } from "@mui/material"
 import {
 	Visibility,
 	VisibilityOff,
-	Login as LoginIcon,
+	PersonAdd as SignUpIcon,
 	Google as GoogleIcon,
 	GitHub as GitHubIcon,
 } from "@mui/icons-material"
+import { supabase } from "./supabaseClient"
 
-function Login() {
+function SignUp() {
+	const theme = useTheme()
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
+	const [confirmPassword, setConfirmPassword] = useState("")
 	const [showPassword, setShowPassword] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState("")
+	const [success, setSuccess] = useState("")
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value)
@@ -39,11 +44,18 @@ function Login() {
 		if (error) setError("")
 	}
 
+	const handleConfirmPasswordChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setConfirmPassword(e.target.value)
+		if (error) setError("")
+	}
+
 	const handleTogglePasswordVisibility = () => {
 		setShowPassword(!showPassword)
 	}
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
 		// Basic validation
@@ -55,18 +67,82 @@ function Login() {
 			setError("Password is required")
 			return
 		}
+		if (password !== confirmPassword) {
+			setError("Passwords do not match")
+			return
+		}
+		if (password.length < 6) {
+			setError("Password must be at least 6 characters")
+			return
+		}
 
-		// Simulate login process
+		// Sign up with Supabase
 		setIsLoading(true)
 		setError("")
+		setSuccess("")
 
-		// Mock API call - replace with actual authentication logic
-		setTimeout(() => {
+		try {
+			const { data, error } = await supabase.auth.signUp({
+				email,
+				password,
+			})
+
+			if (error) {
+				throw error
+			}
+
+			console.log("Signed up successfully:", data)
+			setSuccess(
+				"Account created successfully! Please check your email for verification."
+			)
+			// Clear form fields after successful signup
+			setEmail("")
+			setPassword("")
+			setConfirmPassword("")
+		} catch (err) {
+			console.error("Signup error:", err)
+			setError(err.message || "Failed to create account")
+		} finally {
 			setIsLoading(false)
-			// For demo purposes - you would handle authentication here
-			console.log("Login attempted with:", { email, password })
-			// setError('Invalid credentials'); // Example error
-		}, 1000)
+		}
+	}
+
+	const handleGoogleSignUp = async () => {
+		try {
+			setIsLoading(true)
+			const { error } = await supabase.auth.signInWithOAuth({
+				provider: "google",
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback`,
+				},
+			})
+
+			if (error) throw error
+		} catch (err) {
+			console.error("Google sign-up error:", err)
+			setError(err.message || "Failed to sign up with Google")
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	const handleGitHubSignUp = async () => {
+		try {
+			setIsLoading(true)
+			const { error } = await supabase.auth.signInWithOAuth({
+				provider: "github",
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback`,
+				},
+			})
+
+			if (error) throw error
+		} catch (err) {
+			console.error("GitHub sign-up error:", err)
+			setError(err.message || "Failed to sign up with GitHub")
+		} finally {
+			setIsLoading(false)
+		}
 	}
 
 	return (
@@ -85,15 +161,21 @@ function Login() {
 						gutterBottom
 						sx={{ fontWeight: 600 }}
 					>
-						Sign In to FlashcardPro
+						Create Account
 					</Typography>
 					<Typography variant="body2" color="text.secondary" mb={3}>
-						Enter your credentials to access your account
+						Join Quizzy to create and study flashcards
 					</Typography>
 
 					{error && (
 						<Alert severity="error" sx={{ width: "100%", mb: 2 }}>
 							{error}
+						</Alert>
+					)}
+
+					{success && (
+						<Alert severity="success" sx={{ width: "100%", mb: 2 }}>
+							{success}
 						</Alert>
 					)}
 
@@ -118,7 +200,7 @@ function Login() {
 							name="password"
 							label="Password"
 							id="password"
-							autoComplete="current-password"
+							autoComplete="new-password"
 							type={showPassword ? "text" : "password"}
 							value={password}
 							onChange={handlePasswordChange}
@@ -135,14 +217,21 @@ function Login() {
 									</InputAdornment>
 								),
 							}}
+							sx={{ mb: 2 }}
+						/>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							name="confirmPassword"
+							label="Confirm Password"
+							id="confirmPassword"
+							autoComplete="new-password"
+							type={showPassword ? "text" : "password"}
+							value={confirmPassword}
+							onChange={handleConfirmPasswordChange}
 							sx={{ mb: 3 }}
 						/>
-
-						<Box sx={{ textAlign: "right", mb: 2 }}>
-							<Link href="#" underline="hover" variant="body2">
-								Forgot password?
-							</Link>
-						</Box>
 
 						<Button
 							type="submit"
@@ -150,7 +239,7 @@ function Login() {
 							variant="contained"
 							size="large"
 							disabled={isLoading}
-							startIcon={isLoading ? null : <LoginIcon />}
+							startIcon={isLoading ? null : <SignUpIcon />}
 							sx={{
 								py: 1.5,
 								mb: 3,
@@ -160,15 +249,9 @@ function Login() {
 							{isLoading ? (
 								<CircularProgress size={24} sx={{ position: "absolute" }} />
 							) : (
-								"Sign In"
+								"Sign Up"
 							)}
 						</Button>
-
-						<Divider sx={{ my: 2 }}>
-							<Typography variant="body2" color="text.secondary">
-								OR
-							</Typography>
-						</Divider>
 
 						<Grid container spacing={2} sx={{ mb: 3 }}>
 							<Grid xs={6}>
@@ -177,6 +260,8 @@ function Login() {
 									variant="outlined"
 									startIcon={<GoogleIcon />}
 									sx={{ py: 1 }}
+									onClick={handleGoogleSignUp}
+									disabled={isLoading}
 								>
 									Google
 								</Button>
@@ -187,6 +272,8 @@ function Login() {
 									variant="outlined"
 									startIcon={<GitHubIcon />}
 									sx={{ py: 1 }}
+									onClick={handleGitHubSignUp}
+									disabled={isLoading}
 								>
 									GitHub
 								</Button>
@@ -195,9 +282,9 @@ function Login() {
 
 						<Box sx={{ textAlign: "center" }}>
 							<Typography variant="body2">
-								Don't have an account?{" "}
-								<Link href="#" underline="hover" fontWeight="500">
-									Sign up
+								Already have an account?{" "}
+								<Link href="/login" underline="hover" fontWeight="500">
+									Sign in
 								</Link>
 							</Typography>
 						</Box>
@@ -208,4 +295,4 @@ function Login() {
 	)
 }
 
-export default Login
+export default SignUp
