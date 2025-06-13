@@ -32,13 +32,11 @@ app.use(
 
 app.use(express.json())
 
-// Set up multer to handle file uploads in memory
 const upload = multer({
 	storage: multer.memoryStorage(),
 	limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 })
 
-// Test route
 app.get("/", (req, res) => {
 	res.send("FlashcardProAI server is running!")
 })
@@ -51,18 +49,18 @@ app.post("/api/generate-flashcards", async (req, res) => {
 			return res.status(400).json({ error: "Missing required parameters" })
 		}
 
-		// Prepare system prompt
+		// system prompt
 		let systemPrompt = `You are an expert flashcard creator. 
-Create flashcards based on the following content. 
-For each flashcard, provide a "front" (question/term) and "back" (answer/definition).
-Format your response as a JSON array with this structure:
+CRITICAL: Your output MUST be valid JSON with no extra text.
+Create flashcards based on the content. 
+Return ONLY a JSON array with this exact structure:
 [
   {
-    "front": "Question or term here",
-    "back": "Answer or definition here"
+    "front": "Question or term",
+    "back": "Answer or definition"
   }
 ]
-Only return valid JSON, no other text or explanations.`
+Do not include any explanations, markdown formatting, or text outside the JSON array.`
 
 		// Call Gemini API
 		const fullPrompt = `${systemPrompt}
