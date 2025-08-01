@@ -18,18 +18,18 @@ import {
 	Container,
 	useTheme,
 } from "@mui/material"
-import theme from "../frontend/theme"
-import Login from "../frontend/Login"
-import SignUp from "../frontend/SignUp"
-import Upload from "../frontend/Upload"
-import Home from "../frontend/Home"
-import Sets from "../frontend/Sets"
-import Flashcards from "../frontend/Flashcards"
+import theme from "./components/theme"
+import Login from "./components/Login"
+import SignUp from "./components/SignUp"
+import Upload from "./components/Upload"
+import Home from "./components/Home"
+import Sets from "./components/Sets"
+import Flashcards from "./components/Flashcards"
 // import EditFlashcards from "../frontend/EditFlashcards"
 import { useState, useEffect } from "react"
-import { supabase } from "../frontend/supabaseClient"
+import { supabase } from "./components/supabaseClient"
 import QuizzyLogo from "./Quizzy.png"
-import {signOutAndRedirect} from "../frontend/auth"
+import { signOutAndRedirect } from "./components/auth"
 
 const Navigation = () => {
 	const theme = useTheme()
@@ -180,7 +180,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 		checkAuth()
 	}, [])
 
-	if (loading) return null 
+	if (loading) return null
 
 	return authenticated ? <>{children}</> : <Navigate to="/login" />
 }

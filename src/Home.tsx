@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { supabase } from "../frontend/supabaseClient"
+import { supabase } from "./components/supabaseClient"
 import {
 	Box,
 	Typography,
