@@ -14,8 +14,8 @@ import {
 	useTheme,
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
-import Flashcards from "./src/Flashcards"
-import { supabase } from "./src/supabaseClient"
+import Flashcards from "./Flashcards"
+import { supabase } from "./supabaseClient"
 import { useNavigate } from "react-router-dom"
 
 function Upload() {
