@@ -10,11 +10,10 @@ import {
 	InputAdornment,
 	IconButton,
 	Alert,
-	Divider,
 	CircularProgress,
 	useTheme,
 } from "@mui/material"
-import { Grid } from "@mui/material"
+import Grid from "@mui/material/Grid"
 import {
 	Visibility,
 	VisibilityOff,
@@ -100,8 +99,9 @@ function SignUp() {
 			setPassword("")
 			setConfirmPassword("")
 		} catch (err) {
-			console.error("Signup error:", err)
-			setError(err.message || "Failed to create account")
+			console.error("...", err)
+			if (err instanceof Error) setError(err.message)
+			else setError("Failed to create account")
 		} finally {
 			setIsLoading(false)
 		}
@@ -119,8 +119,9 @@ function SignUp() {
 
 			if (error) throw error
 		} catch (err) {
-			console.error("Google sign-up error:", err)
-			setError(err.message || "Failed to sign up with Google")
+			console.error("...", err)
+			if (err instanceof Error) setError(err.message)
+			else setError("Failed to sign up with Google")
 		} finally {
 			setIsLoading(false)
 		}
@@ -138,8 +139,9 @@ function SignUp() {
 
 			if (error) throw error
 		} catch (err) {
-			console.error("GitHub sign-up error:", err)
-			setError(err.message || "Failed to sign up with GitHub")
+			console.error("...", err)
+			if (err instanceof Error) setError(err.message)
+			else setError("Failed to sign in with GitHub")
 		} finally {
 			setIsLoading(false)
 		}
@@ -254,7 +256,7 @@ function SignUp() {
 						</Button>
 
 						<Grid container spacing={2} sx={{ mb: 3 }}>
-							<Grid xs={6}>
+							<Grid item xs={6}>
 								<Button
 									fullWidth
 									variant="outlined"
@@ -266,7 +268,7 @@ function SignUp() {
 									Google
 								</Button>
 							</Grid>
-							<Grid xs={6}>
+							<Grid item xs={6}>
 								<Button
 									fullWidth
 									variant="outlined"

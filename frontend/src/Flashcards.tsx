@@ -2,12 +2,10 @@ import { useState, useEffect, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import {
 	Box,
-	Card,
 	CardContent,
 	Typography,
 	Button,
 	CircularProgress,
-	IconButton,
 	useTheme,
 } from "@mui/material"
 import {

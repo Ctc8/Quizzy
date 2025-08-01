@@ -8,7 +8,7 @@ import {
 	CircularProgress,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import LogoutIcon from "@mui/icons-material/Logout"
+// import LogoutIcon from "@mui/icons-material/Logout"
 
 function Home() {
 	const [user, setUser] = useState<any>(null)
