@@ -14,12 +14,12 @@ import {
 	useTheme,
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
-import Flashcards from "./Flashcards"
-import { supabase } from "./supabaseClient"
+import Flashcards from "./src/Flashcards"
+import { supabase } from "./src/supabaseClient"
 import { useNavigate } from "react-router-dom"
 
 function Upload() {
-	const theme = useTheme() 
+	const theme = useTheme()
 	const [file, setFile] = useState<File | null>(null)
 	const [flashcardSetName, setFlashcardSetName] = useState("")
 	const [extractedText, setExtractedText] = useState<string>("")

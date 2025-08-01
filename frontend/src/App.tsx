@@ -18,18 +18,18 @@ import {
 	Container,
 	useTheme,
 } from "@mui/material"
-import theme from "./components/theme"
-import Login from "./components/Login"
-import SignUp from "./components/SignUp"
-import Upload from "./components/Upload"
-import Home from "./components/Home"
-import Sets from "./components/Sets"
-import Flashcards from "./components/Flashcards"
+import theme from "./theme"
+import Login from "./Login"
+import SignUp from "./SignUp"
+import Upload from "./Upload"
+import Home from "./Home"
+import Sets from "./Sets"
+import Flashcards from "./Flashcards"
 // import EditFlashcards from "../frontend/EditFlashcards"
 import { useState, useEffect } from "react"
-import { supabase } from "./components/supabaseClient"
+import { supabase } from "./supabaseClient"
 import QuizzyLogo from "./Quizzy.png"
-import { signOutAndRedirect } from "./components/auth"
+import { signOutAndRedirect } from "./auth"
 
 const Navigation = () => {
 	const theme = useTheme()
