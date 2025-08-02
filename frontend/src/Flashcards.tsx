@@ -325,13 +325,13 @@ function Flashcards({
 						>
 							<div
 								style={{
-									...styles.flipCardInner,
+									...styles.flipCardInner as any,
 									...(showAnswer ? styles.flipCardInnerFlipped : {}),
 									...(disableAnimation ? styles.flipCardInnerNoAnimation : {}),
 								}}
 							>
 								{/* Front side - Question */}
-								<div style={styles.flipCardFront}>
+								<div style={styles.flipCardFront as any}>
 									<CardContent
 										sx={{
 											textAlign: "center",
@@ -357,7 +357,7 @@ function Flashcards({
 								</div>
 
 								{/* Back side - Answer */}
-								<div style={styles.flipCardBack}>
+								<div style={styles.flipCardBack as any}>
 									<CardContent
 										sx={{
 											textAlign: "center",

@@ -255,32 +255,35 @@ function SignUp() {
 							)}
 						</Button>
 
-						<Grid container spacing={2} sx={{ mb: 3 }}>
-							<Grid item xs={6}>
-								<Button
-									fullWidth
-									variant="outlined"
-									startIcon={<GoogleIcon />}
-									sx={{ py: 1 }}
-									onClick={handleGoogleSignUp}
-									disabled={isLoading}
-								>
-									Google
-								</Button>
-							</Grid>
-							<Grid item xs={6}>
-								<Button
-									fullWidth
-									variant="outlined"
-									startIcon={<GitHubIcon />}
-									sx={{ py: 1 }}
-									onClick={handleGitHubSignUp}
-									disabled={isLoading}
-								>
-									GitHub
-								</Button>
-							</Grid>
-						</Grid>
+						<Box
+							sx={{
+								display: "flex",
+								gap: 2,
+								mb: 3,
+								flexDirection: { xs: "column", sm: "row" },
+							}}
+						>
+							<Button
+								fullWidth
+								variant="outlined"
+								startIcon={<GoogleIcon />}
+								sx={{ py: 1 }}
+								onClick={handleGoogleSignUp}
+								disabled={isLoading}
+							>
+								Google
+							</Button>
+							<Button
+								fullWidth
+								variant="outlined"
+								startIcon={<GitHubIcon />}
+								sx={{ py: 1 }}
+								onClick={handleGitHubSignUp}
+								disabled={isLoading}
+							>
+								GitHub
+							</Button>
+						</Box>
 
 						<Box sx={{ textAlign: "center" }}>
 							<Typography variant="body2">
