@@ -5,12 +5,12 @@ Quizzy is a full-stack web app that helps students and lifelong learners generat
 
 ## ✨ Features
 
-- 📄 Upload PDF or DOCX study materials
-- 🤖 AI-generated flashcards powered by Google's Gemini API
-- 💾 Save, edit, and delete flashcard sets
-- ⭐ Favorite sets for quick access
-- 🏷️ Tag flashcard sets by subject or topic
-- 📱 Responsive UI using React + MUI + Tailwind
+- Upload PDF or DOCX study materials
+- AI-generated flashcards powered by Google's Gemini API
+- Save, edit, and delete flashcard sets
+- Favorite sets for quick access
+- Tag flashcard sets by subject or topic
+- Responsive UI using React + MUI + Tailwind
 
 ## 🚀 Tech Stack
 
