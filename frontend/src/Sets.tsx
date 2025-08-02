@@ -416,7 +416,7 @@ function Sets() {
 										size="small"
 										onClick={e => handleEditSet(set.id, e)}
 									>
-										<EditIcon fontSize="small" />
+										{/* <EditIcon fontSize="small" /> */}
 									</IconButton>
 									<IconButton
 										size="small"
