@@ -13,7 +13,6 @@ import {
 	CircularProgress,
 	useTheme,
 } from "@mui/material"
-import Grid from "@mui/material/Grid"
 import {
 	Visibility,
 	VisibilityOff,
@@ -24,7 +23,7 @@ import {
 import { supabase } from "./supabaseClient"
 
 function SignUp() {
-	const theme = useTheme()
+	// const theme = useTheme()
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
