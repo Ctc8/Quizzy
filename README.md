@@ -19,4 +19,26 @@ Quizzy is a full-stack web app that helps students and lifelong learners generat
 - **AI Integration**: Google Gemini API  
 - **Database**: Supabase 
 
-[![YouTube Video Thumbnail](https://img.youtube.com/vi/QtOUiJoZgRM/0.jpg)](https://youtu.be/QtOUiJoZgRM)
+## 🛠️ Local Development
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/yourusername/quizzy.git
+cd quizzy
+
+# Install frontend
+cd frontend
+npm install
+
+# Install backend
+cd ../backend
+npm install
+
+# Start frontend
+cd frontend
+npm run dev
+
+# In a new terminal, start backend
+cd ../backend
+npm run dev
+
