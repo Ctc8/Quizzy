@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "./supabaseClient"
 import {
 	Box,
@@ -8,12 +8,11 @@ import {
 	CircularProgress,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-// import LogoutIcon from "@mui/icons-material/Logout"
 
 function Home() {
 	const [user, setUser] = useState<any>(null)
 	const [loading, setLoading] = useState(true)
-	const [signOutLoading, setSignOutLoading] = useState(false)
+	// const [signOutLoading, setSignOutLoading] = useState(false)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -47,19 +46,19 @@ function Home() {
 		}
 	}
 
-	const handleSignOut = async () => {
-		try {
-			setSignOutLoading(true)
-			await supabase.auth.signOut()
-			setUser(null)
-			// Redirect to home after sign out
-			navigate("/")
-		} catch (error) {
-			console.error("Error signing out:", error)
-		} finally {
-			setSignOutLoading(false)
-		}
-	}
+	// const handleSignOut = async () => {
+	// 	try {
+	// 		// setSignOutLoading(true)
+	// 		await supabase.auth.signOut()
+	// 		setUser(null)
+	// 		// Redirect to home after sign out
+	// 		navigate("/")
+	// 	} catch (error) {
+	// 		console.error("Error signing out:", error)
+	// 	} finally {
+	// 		// setSignOutLoading(false)
+	// 	}
+	// }
 
 	if (loading) {
 		return (

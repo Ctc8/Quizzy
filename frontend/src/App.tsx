@@ -47,7 +47,7 @@ const Navigation = () => {
 		checkUser()
 
 		const { data: authListener } = supabase.auth.onAuthStateChange(
-			(event, session) => {
+			(_, session) => {
 				setUser(session?.user || null)
 			}
 		)

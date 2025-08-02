@@ -22,14 +22,14 @@ import {
 	GitHub as GitHubIcon,
 } from "@mui/icons-material"
 import { supabase } from "./supabaseClient"
-import { Link as RouterLink, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 function Login() {
 	// Add the navigate hook
 	const navigate = useNavigate()
 
 	// State for user authentication
-	const [isLoggedIn, setIsLoggedIn] = useState(false)
+	// const [isLoggedIn, setIsLoggedIn] = useState(false)
 	const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 	const [showLoginForm, setShowLoginForm] = useState(true)
 
@@ -46,11 +46,11 @@ function Login() {
 		async function checkAuth() {
 			const { data } = await supabase.auth.getSession()
 			if (data.session) {
-				setIsLoggedIn(true)
+				// setIsLoggedIn(true)
 				// Redirect to sets page if already logged in
 				navigate("/sets")
 			} else {
-				setIsLoggedIn(false)
+				// setIsLoggedIn(false)
 				// Default to sign up form for new users
 				setShowLoginForm(false)
 			}
@@ -154,7 +154,7 @@ function Login() {
 		setError("")
 
 		try {
-			const { data, error } = await supabase.auth.signUp({
+			const { error } = await supabase.auth.signUp({
 				email,
 				password,
 			})

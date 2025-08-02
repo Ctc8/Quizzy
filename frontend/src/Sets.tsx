@@ -207,37 +207,37 @@ function Sets() {
 	}
 
 	// Add a proper sign out handler in Sets component
-	const handleSignOut = async () => {
-		try {
-			setLoading(true)
-			// Sign out from Supabase
-			const { error } = await supabase.auth.signOut()
+	// const handleSignOut = async () => {
+	// 	try {
+	// 		setLoading(true)
+	// 		// Sign out from Supabase
+	// 		const { error } = await supabase.auth.signOut()
 
-			if (error) throw error
+	// 		if (error) throw error
 
-			// Clear user state
-			setUser(null)
+	// 		// Clear user state
+	// 		setUser(null)
 
-			// Show notification - though user will likely be redirected before seeing it
-			setNotification({
-				open: true,
-				message: "Signed out successfully",
-				type: "success",
-			})
+	// 		// Show notification - though user will likely be redirected before seeing it
+	// 		setNotification({
+	// 			open: true,
+	// 			message: "Signed out successfully",
+	// 			type: "success",
+	// 		})
 
-			// Redirect to home page
-			navigate("/")
-		} catch (error) {
-			console.error("Error signing out:", error)
-			setNotification({
-				open: true,
-				message: "Failed to sign out",
-				type: "error",
-			})
-		} finally {
-			setLoading(false)
-		}
-	}
+	// 		// Redirect to home page
+	// 		navigate("/")
+	// 	} catch (error) {
+	// 		console.error("Error signing out:", error)
+	// 		setNotification({
+	// 			open: true,
+	// 			message: "Failed to sign out",
+	// 			type: "error",
+	// 		})
+	// 	} finally {
+	// 		setLoading(false)
+	// 	}
+	// }
 
 	const handleCreateNew = () => {
 		navigate("/upload")
@@ -301,7 +301,15 @@ function Sets() {
 			) : (
 				<Grid container spacing={3}>
 					{sets.map(set => (
-						<Grid item xs={12} sm={6} md={4} key={set.id}>
+						<Box
+							key={set.id}
+							sx={{
+								width: { xs: "100%", sm: "50%", md: "33.33%" }, // Responsive columns
+								boxSizing: "border-box",
+								p: 1, // Add some padding between cards
+								display: "flex",
+							}}
+						>
 							<Card
 								sx={{
 									height: "280px", // Fixed height for all cards
@@ -313,7 +321,7 @@ function Sets() {
 										transform: "translateY(-4px)",
 										boxShadow: "0 6px 12px rgba(0,0,0,0.15)",
 									},
-									width: "100%", // Ensure full width within grid item
+									width: "100%", // Ensure full width within box
 								}}
 								onClick={() => handleViewSet(set.id)}
 							>
@@ -419,7 +427,7 @@ function Sets() {
 									</IconButton>
 								</CardActions>
 							</Card>
-						</Grid>
+						</Box>
 					))}
 				</Grid>
 			)}
